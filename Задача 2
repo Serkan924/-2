@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <string.h>
+#include <openssl/md5.h>
+
+void md5String(char *str, char *output) {
+    unsigned char digest[MD5_DIGEST_LENGTH];
+    MD5((unsigned char*)str, strlen(str), digest);
+    
+    for(int i = 0; i < MD5_DIGEST_LENGTH; i++) {
+        sprintf(&output[i * 2], "02x", digest[i]);
+    }
+}
+
+int main() {
+    char target[] = "81dc9bbb52d04dc20036dbd8313ed055";
+    char pin[20];
+    char hash[33];
+    for(int i = 0; i <= 9999; i++) {
+        sprintf(pin, "%04dEND", i);
+        md5String(pin, hash);
+        if(strcmp(hash, target) == 0) {
+            printf("PIN found: %04d\n", i);
+            printf("Full string: %s\n" , pin);
+            return 0;
+        }
+    }
+    printf("PIN not found.\n");
+}
